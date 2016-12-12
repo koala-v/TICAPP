@@ -266,6 +266,33 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
+                    int intMaxLineItemNo = 1;
+                    List<Sael1> list1 = db.Select<Sael1>("Select Max(LineItemNo) LineItemNo from Sael1 Where TableName = 'Imgr1' and PrimaryKeyName ='GoodsReceiptNoteNo' and PrimaryKeyValue='"+ request.GoodsReceiptNoteNo+"'" );
+                    if (request.GoodsReceiptNoteNo != null && request.GoodsReceiptNoteNo != "") {
+                        if (list1 != null)
+                        {
+                            if (list1[0].LineItemNo > 0)
+                                intMaxLineItemNo = list1[0].LineItemNo + 1;
+                        }
+                        db.Insert(new Sael1
+                        {
+                            TableName = "Imgr1",
+                            PrimaryKeyName= "GoodsReceiptNoteNo",
+                            PrimaryKeyValue=request.GoodsReceiptNoteNo,
+                            DateTime = DateTime.Now,
+                            UpdateDatetime = DateTime.Now,                         
+                            LineItemNo = intMaxLineItemNo,
+                            UpdateBy = request.UserID,
+                            Description = "Description"
+                        });
+                        string str;
+                        str = "TallyDateTime=getDate() ";
+                        db.Update("Imgr1",
+                               str,
+                               " GoodsReceiptNoteNo=" + request.GoodsReceiptNoteNo + " ");
+                    }
+                   
+
                     Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
                 }
             }
@@ -288,11 +315,12 @@ namespace WebApi.ServiceModel.Wms
             int Result = -1;
             try
             {
+
                 string[] QtyRemarkDetail = { "" };
                 if (request.QtyRemarkList != null && request.NewFlagList.Trim() != "")
                 {
-                    QtyRemarkDetail= request.QtyRemarkList.Split(',');
-                }                                 
+                    QtyRemarkDetail = request.QtyRemarkList.Split(',');
+                }
                 string[] LineItemNoDetail = request.LineItemNoList.Split(',');
                 string[] DimensionFlagDetail = request.DimensionFlagList.Split(',');
                 string[] NewFlagDetail = request.NewFlagList.Split(',');
@@ -309,14 +337,43 @@ namespace WebApi.ServiceModel.Wms
                     {
                         for (int i = 0; i < DimensionFlagDetail.Length; i++)
                         {
-                            UpdateNewFlag= NewFlagDetail[i];
-                            if (UpdateNewFlag!="Y")
-                            {UpdateNewFlag="N";}
-                            Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(LineItemNoDetail[i]), NewFlag =UpdateNewFlag, DimensionQty = DimensionQtyDetail[i], QtyRemark = QtyRemarkDetail[i], DimensionFlag = DimensionFlagDetail[i], StoreNo = StoreNoDetail[i], UpdateBy = request.UserID });
+                            UpdateNewFlag = NewFlagDetail[i];
+                            if (UpdateNewFlag != "Y")
+                            { UpdateNewFlag = "N"; }
+                            Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(LineItemNoDetail[i]), NewFlag = UpdateNewFlag, DimensionQty = DimensionQtyDetail[i], QtyRemark = QtyRemarkDetail[i], DimensionFlag = DimensionFlagDetail[i], StoreNo = StoreNoDetail[i], UpdateBy = request.UserID });
                         }
                     }
-                    Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
-                    if (Result != -1)
+
+                    int intMaxLineItemNo = 1;
+                    List<Sael1> list1 = db.Select<Sael1>("Select Max(LineItemNo) LineItemNo from Sael1 Where TableName = 'Imgr1' and PrimaryKeyName ='GoodsReceiptNoteNo' and PrimaryKeyValue='" + request.GoodsReceiptNoteNo + "'");
+                    if (request.GoodsReceiptNoteNo != null && request.GoodsReceiptNoteNo != "")
+                    {
+                        if (list1 != null)
+                        {
+                            if (list1[0].LineItemNo > 0)
+                                intMaxLineItemNo = list1[0].LineItemNo + 1;
+                        }
+                        db.Insert(new Sael1
+                        {
+                            TableName = "Imgr1",
+                            PrimaryKeyName = "GoodsReceiptNoteNo",
+                            PrimaryKeyValue = request.GoodsReceiptNoteNo,
+                            DateTime = DateTime.Now,
+                            UpdateDatetime = DateTime.Now,
+                            LineItemNo = intMaxLineItemNo,
+                            UpdateBy = request.UserID,
+                            Description = "Description"
+                        });
+                        string str;
+                        str = "PutAwayDateTime=getDate() ";
+                        db.Update("Imgr1",
+                               str,
+                               " GoodsReceiptNoteNo=" + request.GoodsReceiptNoteNo + " ");
+
+                    }
+                        Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
+             
+                        if (Result != -1)
                     {
                         List<Imgr2_Receipt> Result1 = null;
                         Result1 = db.Select<Imgr2_Receipt>(

@@ -207,7 +207,7 @@ appControllers.controller('GrDetailCtrl', [
                     SerialNo: '',
                     Qty: imgr2.ScanQty
                 };
-              })
+              });
             }
         };
         var showImpr = function (barcode) {
@@ -565,35 +565,36 @@ appControllers.controller('GrDetailCtrl', [
                     imgr2 = value,
                     SnArray = null,
                     SerialNos = '';
-                if (is.equal(imgr2.SerialNoFlag, 'Y')) {
-                    if (hmImsn1.count() > 0 && hmImsn1.has(barcode)) {
-                        SnArray = hmImsn1.get(barcode);
-                    }
-                    for (var i in SnArray) {
-                        SerialNos = SerialNos + ',' + SnArray[i];
-                    }
-                    SerialNos = SerialNos.substr(1, SerialNos.length);
-                    var objUri = ApiService.Uri(true, '/api/wms/imsn1/create');
-                    objUri.addSearch('ReceiptNoteNo', $scope.Detail.GRN);
-                    objUri.addSearch('ReceiptLineItemNo', imgr2.LineItemNo);
-                    objUri.addSearch('SerialNos', SerialNos);
-                    objUri.addSearch('Imgr2TrxNo', imgr2.TrxNo);
-                    ApiService.Get(objUri, true).then(function success(result) {});
-                }
-                if (imgr2.QtyStatus !== null && imgr2.QtyStatus !== '' && imgr2.Qty != imgr2.ScanQty) {
-                    var objUri = ApiService.Uri(true, '/api/wms/imgr2/qtyremark');
-                    objUri.addSearch('LineItemNo', imgr2.LineItemNo);
-                    objUri.addSearch('TrxNo', imgr2.TrxNo);
-                    objUri.addSearch('GoodsReceiptNoteNo', imgr2.GoodsReceiptNoteNo);
-                    objUri.addSearch('QtyRemarkQty', imgr2.ScanQty);
-                    objUri.addSearch('QtyFieldName', imgr2.QtyName);
-                    objUri.addSearch('UserId', userID);   objUri.addSearch('QtyRemark', imgr2.QtyStatus + ' LN:'+imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>'+imgr2.ScanQty);
-                    ApiService.Get(objUri, true).then(function success(result) {});
-                }
+                // if (is.equal(imgr2.SerialNoFlag, 'Y')) {
+                //     if (hmImsn1.count() > 0 && hmImsn1.has(barcode)) {
+                //         SnArray = hmImsn1.get(barcode);
+                //     }
+                //     for (var i in SnArray) {
+                //         SerialNos = SerialNos + ',' + SnArray[i];
+                //     }
+                //     SerialNos = SerialNos.substr(1, SerialNos.length);
+                //     var objUri = ApiService.Uri(true, '/api/wms/imsn1/create');
+                //     objUri.addSearch('ReceiptNoteNo', $scope.Detail.GRN);
+                //     objUri.addSearch('ReceiptLineItemNo', imgr2.LineItemNo);
+                //     objUri.addSearch('SerialNos', SerialNos);
+                //     objUri.addSearch('Imgr2TrxNo', imgr2.TrxNo);
+                //     ApiService.Get(objUri, true).then(function success(result) {});
+                // }
+                // if (imgr2.QtyStatus !== null && imgr2.QtyStatus !== '' && imgr2.Qty != imgr2.ScanQty) {
+                //     var objUri = ApiService.Uri(true, '/api/wms/imgr2/qtyremark');
+                //     objUri.addSearch('LineItemNo', imgr2.LineItemNo);
+                //     objUri.addSearch('TrxNo', imgr2.TrxNo);
+                //     objUri.addSearch('GoodsReceiptNoteNo', imgr2.GoodsReceiptNoteNo);
+                //     objUri.addSearch('QtyRemarkQty', imgr2.ScanQty);
+                //     objUri.addSearch('QtyFieldName', imgr2.QtyName);
+                //     objUri.addSearch('UserId', userID);   objUri.addSearch('QtyRemark', imgr2.QtyStatus + ' LN:'+imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>'+imgr2.ScanQty);
+                //     ApiService.Get(objUri, true).then(function success(result) {});
+                // }
             });
             var objUri = ApiService.Uri(true, '/api/wms/imgr1/confirm');
             objUri.addSearch('TrxNo', $scope.Detail.TrxNo);
             objUri.addSearch('UserId', userID);
+            objUri.addSearch('GoodsReceiptNoteNo', $scope.Detail.GRN);
             ApiService.Get(objUri, true).then(function success(result) {
                 PopupService.Info(popup, 'Confirm Success').then(function (res) {
                     $scope.returnList();

@@ -179,12 +179,36 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    Result = db.Update<Imgi1>(
+                    int intMaxLineItemNo = 1;
+                    List<Sael1> list1 = db.Select<Sael1>("Select Max(LineItemNo) LineItemNo from Sael1 Where TableName = 'Imgi1' and PrimaryKeyName ='GoodsIssueNoteNo' and PrimaryKeyValue='" + request.GoodsIssueNoteNo + "'");
+                    if (request.GoodsIssueNoteNo != null && request.GoodsIssueNoteNo != "")
+                    {
+                        if (list1 != null)
+                        {
+                            if (list1[0].LineItemNo > 0)
+                                intMaxLineItemNo = list1[0].LineItemNo + 1;
+                        }
+                        db.Insert(new Sael1
+                        {
+                            TableName = "Imgi1",
+                            PrimaryKeyName = "GoodsIssueNoteNo",
+                            PrimaryKeyValue = request.GoodsIssueNoteNo,
+                            DateTime = DateTime.Now,
+                            UpdateDatetime = DateTime.Now,
+                            LineItemNo = intMaxLineItemNo,
+                            UpdateBy = request.UserID,
+                            Description = "Description"
+                        });
+                    }
+          
+
+                        Result = db.Update<Imgi1>(
                                     new
                                     {
                                         StatusCode = request.StatusCode,
                                         CompleteBy = request.UserID,
                                         CompleteDate = DateTime.Now
+                                        PickDateTime= DateTime.Now
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo)
                     );
