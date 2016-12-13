@@ -159,7 +159,10 @@ namespace WebApi.ServiceModel.Wms
             {
                 List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
                 string strBarCodeFiled = impa1[0].BarCodeField;
-                strBarCodeList = strBarCodeFiled.Split(',');
+                if (strBarCodeFiled != null || strBarCodeFiled != "") {
+                    strBarCodeList = strBarCodeFiled.Split(',');
+                }
+             
             }
             return strBarCodeList;
         }
@@ -233,9 +236,12 @@ namespace WebApi.ServiceModel.Wms
                                     "Left Join Imgr1 On Imgr2.TrxNo = Imgr1.TrxNo " +
                                     "Where Imgr1.GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "'";
                     Result = db.Select<Imgr2_Putaway>(strSql);
+                    Console.Write(strSql);
                 }
+               
             }
             catch { throw; }
+        
             return Result;
         }
         public List<Imgr2_Transfer> Get_Imgr2_Transfer_List(Imgr request)
@@ -289,11 +295,11 @@ namespace WebApi.ServiceModel.Wms
                         str = "TallyDateTime=getDate() ";
                         db.Update("Imgr1",
                                str,
-                               " GoodsReceiptNoteNo=" + request.GoodsReceiptNoteNo + " ");
+                               " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + " '");
                     }
                    
 
-                    Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
+                   Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
                 }
             }
             catch { throw; }
@@ -368,7 +374,7 @@ namespace WebApi.ServiceModel.Wms
                         str = "PutAwayDateTime=getDate() ";
                         db.Update("Imgr1",
                                str,
-                               " GoodsReceiptNoteNo=" + request.GoodsReceiptNoteNo + " ");
+                               " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "' ");
 
                     }
                         Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });

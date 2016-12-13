@@ -237,7 +237,7 @@ appControllers.controller('PickingDetailCtrl', [
                         hmImsn1.set(barcode, SnArray);
                     } else {
                         $scope.Detail.Scan.SerialNo = '';
-                        $scope.$apply();
+                        // $scope.$apply();
                         return;
                     }
                 } else {
@@ -524,6 +524,7 @@ appControllers.controller('PickingDetailCtrl', [
                         var objUri = ApiService.Uri(true, '/api/wms/imgi1/update');
                         objUri.addSearch('TrxNo', imgi2.TrxNo);
                         objUri.addSearch('UserID', sessionStorage.getItem('UserId').toString());
+                        objUri.addSearch('GoodsIssueNoteNo', $scope.Detail.GIN);
                         objUri.addSearch('StatusCode', 'CMP');
                         ApiService.Get(objUri, true).then(function (res) {
                             return PopupService.Info(popup, 'Confirm Success');

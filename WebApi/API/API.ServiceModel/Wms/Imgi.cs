@@ -199,6 +199,19 @@ namespace WebApi.ServiceModel.Wms
                             UpdateBy = request.UserID,
                             Description = "Description"
                         });
+                        db.Insert(new Imsl1
+                        {
+                            DocNo = request.GoodsIssueNoteNo,
+                            DocType = "WH",                        
+                            Description = "COMPLETE",
+                            StatusLogDateTime = DateTime.Now,
+                            UserId = request.UserID,
+                            StatusCode = request.StatusCode,
+                            UpdateBy = request.UserID,
+                            UpdateDateTime = DateTime.Now,
+                        });
+
+                    
                     }
           
 
@@ -207,7 +220,7 @@ namespace WebApi.ServiceModel.Wms
                                     {
                                         StatusCode = request.StatusCode,
                                         CompleteBy = request.UserID,
-                                        CompleteDate = DateTime.Now
+                                        CompleteDate = DateTime.Now,
                                         PickDateTime= DateTime.Now
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo)
