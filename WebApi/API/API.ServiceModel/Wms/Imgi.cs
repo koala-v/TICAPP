@@ -197,7 +197,7 @@ namespace WebApi.ServiceModel.Wms
                             UpdateDatetime = DateTime.Now,
                             LineItemNo = intMaxLineItemNo,
                             UpdateBy = request.UserID,
-                            Description = "Description"
+                            Description = "PICKED"
                         });
                         db.Insert(new Imsl1
                         {

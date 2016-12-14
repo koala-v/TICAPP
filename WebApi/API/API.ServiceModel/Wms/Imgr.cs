@@ -289,7 +289,7 @@ namespace WebApi.ServiceModel.Wms
                             UpdateDatetime = DateTime.Now,                         
                             LineItemNo = intMaxLineItemNo,
                             UpdateBy = request.UserID,
-                            Description = "Description"
+                            Description = "GOODS TALLIED"
                         });
                         string str;
                         str = "TallyDateTime=getDate() ";
@@ -368,7 +368,7 @@ namespace WebApi.ServiceModel.Wms
                             UpdateDatetime = DateTime.Now,
                             LineItemNo = intMaxLineItemNo,
                             UpdateBy = request.UserID,
-                            Description = "Description"
+                            Description = "PUTAWAY"
                         });
                         string str;
                         str = "PutAwayDateTime=getDate() ";
