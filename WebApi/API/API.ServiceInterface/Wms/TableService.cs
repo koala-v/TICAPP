@@ -124,6 +124,24 @@ namespace WebApi.ServiceInterface.Wms
             }
         }
 
+        public void TS_Impa1(Auth auth, Impa request, Impa_Logic impa1_Logic, CommonResponse ecr, string[] token, string uri)
+        {
+            if (auth.AuthResult(token, uri))
+            {
+                if (uri.IndexOf("/wms/impa1") > 0)
+                {
+                    ecr.data.results = impa1_Logic.Get_Impa1_List();
+                }
+                ecr.meta.code = 200;
+                ecr.meta.message = "OK";
+            }
+            else
+            {
+                ecr.meta.code = 401;
+                ecr.meta.message = "Unauthorized";
+            }
+        }
+
         public void TS_Imgi(Auth auth, Imgi request, Imgi_Logic imgi_Logic, CommonResponse ecr, string[] token, string uri)
         {
             if (auth.AuthResult(token, uri))

@@ -355,10 +355,21 @@ appControllers.controller( 'MainCtrl', [
     '$scope',
     '$state',
     '$ionicPopup',
+    'ApiService',
     function(
         $scope,
         $state,
-        $ionicPopup ) {
+        $ionicPopup,
+      ApiService ) {
+$scope.Impa1={
+  ShowCycleCountAppFlag:""
+};
+          var showImpa1=function(){
+          var objUri = ApiService.Uri(true, '/api/wms/impa1');
+          ApiService.Get(objUri, true).then(function success(result) {
+              $scope.Impa1.ShowCycleCountAppFlag=result.data.results[0].ShowCycleCountAppFlag;
+          });
+        } ;
         $scope.func_Enquiry = function() {
             $state.go( 'enquiryList', {}, {
                 reload: true
@@ -400,4 +411,5 @@ appControllers.controller( 'MainCtrl', [
                 reload: true
             } );
         };
+        showImpa1();
     } ] );
