@@ -13,5 +13,8 @@ namespace WebApi.ServiceModel.Tables
         public Nullable<System.DateTime> ReceiptDate { get; set; }
         public string RefNo { get; set; }
         public string StatusCode { get; set; }
+        public string AppTallyConfirmStatus { get; set; }
+        public string AppPutawayConfirmStatus { get; set; }
+
     }
 }

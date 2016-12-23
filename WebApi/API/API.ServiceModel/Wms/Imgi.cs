@@ -17,6 +17,7 @@ namespace WebApi.ServiceModel.Wms
     [Route("/wms/imgi2/verify", "Get")]					//verify?GoodsIssueNoteNo=
     [Route("/wms/imgi2/qtyremark", "Get")]
     [Route("/wms/imgi2/packingno", "Get")]
+    [Route("/wms/verify/imgi1/update", "Get")]     //verify/?TtrNo
     public class Imgi : IReturn<CommonResponse>
     {
         public string CustomerCode { get; set; }
@@ -221,7 +222,8 @@ namespace WebApi.ServiceModel.Wms
                                         StatusCode = request.StatusCode,
                                         CompleteBy = request.UserID,
                                         CompleteDate = DateTime.Now,
-                                        PickDateTime= DateTime.Now
+                                        PickDateTime= DateTime.Now,
+                                        AppPickConfirmStatus= "CMP"
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo)
                     );
@@ -244,6 +246,25 @@ namespace WebApi.ServiceModel.Wms
                                         UserDefine2 = request.PackingNo
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
+                    );
+                }
+            }
+            catch { throw; }
+            return Result;
+        }
+        public int Update_verify_imgi1(Imgi request)
+        {
+            int Result = -1;
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    Result = db.Update<Imgi1>(
+                                    new
+                                    {
+                                        AppIssueVerifyStatus = "CMP"
+                                    },
+                                    p => p.TrxNo == int.Parse(request.TrxNo)
                     );
                 }
             }

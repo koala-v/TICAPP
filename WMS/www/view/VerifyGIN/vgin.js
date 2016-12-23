@@ -173,7 +173,7 @@ appControllers.controller('VginDetailCtrl', [
                           } else {
                               PopupService.Alert(popup, 'Wrong Product').then();
                           }
-                        }                        
+                        }
                     };
                     var setSnQty = function (barcode, imgi2) {
                         SqlService.Select('Imgi2_Verify', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
@@ -398,8 +398,9 @@ appControllers.controller('VginDetailCtrl', [
                                 var len = results.rows.length;
                                 if (len > 0) {
                                     var blnDiscrepancies = false;
+                                    var imgi2;
                                     for (var i = 0; i < len; i++) {
-                                        var imgi2 = results.rows.item(i);
+                                         imgi2 = results.rows.item(i);
                                         if (is.not.empty(imgi2.BarCode)) {
                                             if (imgi2.Qty != imgi2.ScanQty) {
                                                 console.log('Product (' + imgi2.ProductCode + ') Qty not equal.');
@@ -415,9 +416,15 @@ appControllers.controller('VginDetailCtrl', [
                                             $scope.openModal();
                                         });
                                     } else {
-                                        PopupService.Info(popup, 'Confirm Success').then(function (popup) {
-                                            $scope.returnList();
-                                        });
+                                      var objUri = ApiService.Uri(true, '/api/wms/verify/imgi1/update');
+                                      objUri.addSearch('TrxNo', imgi2.TrxNo);
+                                      ApiService.Get(objUri, true).then(function (res) {
+                                          return PopupService.Info(popup, 'Confirm Success');
+                                      }).then(function (res) {
+                                          $scope.returnList();
+                                      });
+
+
                                     }
                                 } else {
                                     $ionicLoading.hide();

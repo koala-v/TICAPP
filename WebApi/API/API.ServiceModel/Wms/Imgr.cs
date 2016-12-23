@@ -292,7 +292,9 @@ namespace WebApi.ServiceModel.Wms
                             Description = "GOODS TALLIED"
                         });
                         string str;
-                        str = "TallyDateTime=getDate() ";
+                        string strCMP = "CMP";
+                        //str = " PackingQty = " + PackingQty + ",WholeQty = " + WholeQty + ",LooseQty = " + LooseQty + ", UpdateBy=" + Modfunction.SQLSafeValue(ja[i]["UserId"].ToString()) + "";
+                        str = "TallyDateTime=getDate(),AppTallyConfirmStatus='"+ strCMP + "' ";
                         db.Update("Imgr1",
                                str,
                                " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + " '");
@@ -371,7 +373,7 @@ namespace WebApi.ServiceModel.Wms
                             Description = "PUTAWAY"
                         });
                         string str;
-                        str = "PutAwayDateTime=getDate() ";
+                        str = "PutAwayDateTime=getDate() , AppPutawayConfirmStatus='CMP' ";
                         db.Update("Imgr1",
                                str,
                                " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "' ");
@@ -389,7 +391,7 @@ namespace WebApi.ServiceModel.Wms
                         {
                             for (int i = 0; i < Result1.Count; i++)
                             {
-                                Result = db.SqlScalar<int>("Update Imgr2 Set MovementTrxNo=(Select TrxNo From Impm1 Where BatchNo=@GoodsReceiptNoteNo And BatchLineItemNo=@BatchLineItemNo And CustomerCode=@CustomerCode) Where TrxNo=@TrxNo  And LineItemNo=@LineItemNo", new { GoodsReceiptNoteNo = Result1[i].GoodsReceiptNoteNo, BatchLineItemNo = Result1[i].LineItemNo, CustomerCode = Result1[i].CustomerCode, TrxNo = int.Parse(request.TrxNo), LineItemNo = Result1[i].LineItemNo });
+                                Result = db.SqlScalar<int>("Update Imgr2 Set MovementTrxNo=(Select top 1 TrxNo From Impm1 Where BatchNo=@GoodsReceiptNoteNo And BatchLineItemNo=@BatchLineItemNo And CustomerCode=@CustomerCode order by TrxNo) Where TrxNo=@TrxNo  And LineItemNo=@LineItemNo", new { GoodsReceiptNoteNo = Result1[i].GoodsReceiptNoteNo, BatchLineItemNo = Result1[i].LineItemNo, CustomerCode = Result1[i].CustomerCode, TrxNo = int.Parse(request.TrxNo), LineItemNo = Result1[i].LineItemNo });
                             }
                         }
                     }

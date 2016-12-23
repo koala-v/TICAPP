@@ -148,9 +148,6 @@ namespace WebApi.ServiceInterface.Wms
             {
                 if (uri.IndexOf("/wms/imgi1/update") > 0)
                 {
-                   
-
-
 
                     ecr.data.results = imgi_Logic.Update_Imgi1_Status(request);
                 }
@@ -162,6 +159,7 @@ namespace WebApi.ServiceInterface.Wms
                 {
                     ecr.data.results = imgi_Logic.Get_Imgi2_Picking_List(request);
                 }
+
                 else if (uri.IndexOf("/wms/imgi2/verify") > 0)
                 {
                     ecr.data.results = imgi_Logic.Get_Imgi2_Verify_List(request);
@@ -173,6 +171,10 @@ namespace WebApi.ServiceInterface.Wms
                 else if (uri.IndexOf("/wms/imgi2/packingno") > 0)
                 {
                     ecr.data.results = imgi_Logic.Update_Imgi2_PackingNo(request);
+                }
+                else if (uri.IndexOf("wms/verify/imgi1/update") > 0)
+                {
+                    ecr.data.results = imgi_Logic.Update_verify_imgi1(request);
                 }
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";

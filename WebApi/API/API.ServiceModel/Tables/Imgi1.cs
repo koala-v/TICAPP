@@ -14,5 +14,9 @@ namespace WebApi.ServiceModel.Tables
         public string RefNo { get; set; }
         public string StatusCode { get; set; }
         public Nullable<System.DateTime>  PickDateTime { get; set; }
+        public string AppIssueVerifyStatus { get; set; }
+        public string AppPickConfirmStatus { get; set; }
+
     }
+
 }
