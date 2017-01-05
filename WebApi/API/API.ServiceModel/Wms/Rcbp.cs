@@ -30,7 +30,7 @@ namespace WebApi.ServiceModel.Wms
                 {
                     if (!string.IsNullOrEmpty(request.BusinessPartyName))
                     {
-																								string strSQL = "Select Top 10 *,(Select Top 1 CountryName From Rccy1 Where CountryCode=Rcbp1.CountryCode) AS CountryName From Rcbp1 Where IsNUll(StatusCode,'')<>'DEL' And BusinessPartyName LIKE '" + request.BusinessPartyName + "%' Order By BusinessPartyCode Asc";
+																								string strSQL = "Select Top 10 *,BusinessPartyCode as 'BusinessPartyName',(Select Top 1 CountryName From Rccy1 Where CountryCode=Rcbp1.CountryCode) AS CountryName From Rcbp1 Where IsNUll(StatusCode,'')<>'DEL' And BusinessPartyCode LIKE '" + request.BusinessPartyName + "%' Order By BusinessPartyCode Asc";
 																								Result = db.Select<Rcbp1>(strSQL);
                     }
                     else if (!string.IsNullOrEmpty(request.TrxNo))
