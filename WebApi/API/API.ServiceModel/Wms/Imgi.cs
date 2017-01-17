@@ -35,6 +35,12 @@ namespace WebApi.ServiceModel.Wms
     }
     public class Imgi_Logic
     {
+
+        List<Impa1> ResultImpa1 = null;
+        string AppTallyConfirmStatus;
+        string AppPutawayConfirmStatus;
+        string AppPickConfirmStatus;
+        string AppIssueVerifyStatus;
         public IDbConnectionFactory DbConnectionFactory { get; set; }
         public List<Imgi1> Get_Imgi1_List(Imgi request)
         {
@@ -45,6 +51,7 @@ namespace WebApi.ServiceModel.Wms
                 {
                     if (!string.IsNullOrEmpty(request.CustomerCode))
                     {
+                       
                         if (!string.IsNullOrEmpty(request.StatusCode))
                         {
                             Result = db.SelectParam<Imgi1>(
@@ -175,6 +182,7 @@ namespace WebApi.ServiceModel.Wms
 
         public int Update_Imgi1_Status(Imgi request)
         {
+            Get_Impa1_List();
             int Result = -1;
             try
             {
@@ -215,19 +223,20 @@ namespace WebApi.ServiceModel.Wms
                     
                     }
           
-
+                    if (AppPickConfirmStatus !="") { 
                         Result = db.Update<Imgi1>(
                                     new
                                     {
-                                        StatusCode = request.StatusCode,
+                                        StatusCode = AppPickConfirmStatus,
                                         CompleteBy = request.UserID,
                                         CompleteDate = DateTime.Now,
                                         PickDateTime= DateTime.Now,
-                                        AppPickConfirmStatus= "CMP"
+                                        AppPickConfirmStatus= AppPickConfirmStatus
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo)
                     );
                 }
+            }
             }
             catch { throw; }
             return Result;
@@ -254,23 +263,50 @@ namespace WebApi.ServiceModel.Wms
         }
         public int Update_verify_imgi1(Imgi request)
         {
+            Get_Impa1_List();
             int Result = -1;
             try
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    Result = db.Update<Imgi1>(
-                                    new
-                                    {
-                                        AppIssueVerifyStatus = "CMP"
+
+                    if (   Modfunction.CheckNull(AppIssueVerifyStatus) != "" ) {
+                        Result = db.Update<Imgi1>(
+                                        new
+                                        {
+                                            StatusCode = AppIssueVerifyStatus
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo)
                     );
                 }
             }
+            }
             catch { throw; }
             return Result;
+        
         }
+
+        public List<Impa1> Get_Impa1_List()
+        {
+
+            try
+            {
+
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    string strSQL = "Select  isNull(ShowCycleCountAppFlag,'N') as ShowCycleCountAppFlag,BarCodeField ,isnull(AppTallyConfirmStatus,'') as AppTallyConfirmStatus, isnull(AppPutawayConfirmStatus,'') as AppPutawayConfirmStatus ,isnull(AppPickConfirmStatus,'') as AppPickConfirmStatus ,isnull(AppIssueVerifyStatus,'') as AppIssueVerifyStatus  from Impa1";
+                    ResultImpa1 = db.Select<Impa1>(strSQL);
+                    AppTallyConfirmStatus = Modfunction.CheckNull(ResultImpa1[0].AppTallyConfirmStatus);
+                    AppPutawayConfirmStatus = Modfunction.CheckNull(ResultImpa1[0].AppPutawayConfirmStatus);
+                    AppPickConfirmStatus = Modfunction.CheckNull(ResultImpa1[0].AppPickConfirmStatus);
+                    AppIssueVerifyStatus = Modfunction.CheckNull(ResultImpa1[0].AppIssueVerifyStatus);
+                }
+            }
+            catch { throw; }
+            return ResultImpa1;
+        }
+
+
         public int Update_Imgi2_QtyRemark(Imgi request)
         {
             Update_Imgi2_PackingNo(request);

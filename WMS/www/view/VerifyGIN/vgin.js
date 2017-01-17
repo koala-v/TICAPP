@@ -49,7 +49,7 @@ appControllers.controller('VginListCtrl', [
             return moment(utc).format('DD-MMM-YYYY');
         };
         $scope.GoToDetail = function (Imgi1) {
-            if (Imgi1 != null) {
+            if (Imgi1 !== null) {
                 $state.go('vginDetail', {
                     'CustomerCode': Imgi1.CustomerCode,
                     'TrxNo': Imgi1.TrxNo,
@@ -382,7 +382,7 @@ appControllers.controller('VginDetailCtrl', [
                             } else {
                                 PopupService.Info(popup, 'Already the first one').then();
                             }
-                        }
+                        };
                         $scope.showNext = function () {
                             var intRow = $scope.Detail.Imgi2.RowNum + 1;
                             if ($scope.Detail.Imgi2s.length > 0 && $scope.Detail.Imgi2s.length >= intRow && is.equal($scope.Detail.Imgi2s[intRow - 1].RowNum, intRow)) {
@@ -391,7 +391,7 @@ appControllers.controller('VginDetailCtrl', [
                             } else {
                                 PopupService.Info(popup, 'Already the last one').then();
                             }
-                        }
+                        };
                         $scope.checkConfirm = function () {
                             $ionicLoading.show();
                             SqlService.Select('Imgi2_Verify', '*').then(function (results) {

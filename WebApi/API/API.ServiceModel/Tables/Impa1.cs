@@ -9,6 +9,12 @@ namespace WebApi.ServiceModel.Tables
     {
         public string ShowCycleCountAppFlag { get; set; }
         public string BarCodeField { get; set; }
-        
+        public string AppTallyConfirmStatus { get; set; }
+        public string AppPutawayConfirmStatus { get; set; }
+        public string AppPickConfirmStatus { get; set; }
+        public string AppIssueVerifyStatus { get; set; }
+
+
+
     }
 }

@@ -125,7 +125,7 @@ appService.service( 'ApiService', [
                     deferred.reject( response.data );
                     console.log( response.status );
                     PopupService.Alert( popup, response.data || 'Request failed' );
-                } )
+                } );
             } else {
                 if ( blnShowLoad ) {
                     $ionicLoading.hide();

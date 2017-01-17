@@ -37,10 +37,19 @@ namespace WebApi.ServiceModel.Wms
         public string DimensionQtyList { get; set; }
         public string StoreNoList { get; set; }
 
+       
+
+
     }
     public class Imgr_Logic
     {
+      
         public IDbConnectionFactory DbConnectionFactory { get; set; }
+        List<Impa1> ResultImpa1 = null;
+        string AppTallyConfirmStatus;
+        string AppPutawayConfirmStatus;
+        string AppPickConfirmStatus;
+        string AppIssueVerifyStatus;
         public List<Imgr1> Get_Imgr1_List(Imgr request)
         {
             List<Imgr1> Result = null;
@@ -267,6 +276,7 @@ namespace WebApi.ServiceModel.Wms
         }
         public int Confirm_Imgr1(Imgr request)
         {
+            Get_Impa1_List();
             int Result = -1;
             try
             {
@@ -291,22 +301,47 @@ namespace WebApi.ServiceModel.Wms
                             UpdateBy = request.UserID,
                             Description = "GOODS TALLIED"
                         });
+                         
+              
+                    }
+
+                    if (AppTallyConfirmStatus =="EXE") { 
+                    Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
+                 }
+                    if (AppTallyConfirmStatus != "")
+                    {
                         string str;
-                        string strCMP = "CMP";
-                        //str = " PackingQty = " + PackingQty + ",WholeQty = " + WholeQty + ",LooseQty = " + LooseQty + ", UpdateBy=" + Modfunction.SQLSafeValue(ja[i]["UserId"].ToString()) + "";
-                        str = "TallyDateTime=getDate(),AppTallyConfirmStatus='"+ strCMP + "' ";
+                        str = "TallyDateTime=getDate(),StatusCode='" + AppTallyConfirmStatus + "' ";
                         db.Update("Imgr1",
                                str,
                                " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + " '");
                     }
-                   
-
-                   Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
                 }
             }
             catch { throw; }
             return Result;
         }
+
+        public List<Impa1> Get_Impa1_List()
+        {
+         
+            try
+            {
+               
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    string strSQL = "Select  isNull(ShowCycleCountAppFlag,'N') as ShowCycleCountAppFlag,BarCodeField ,isnull(AppTallyConfirmStatus,'') as AppTallyConfirmStatus, isnull(AppPutawayConfirmStatus,'') as AppPutawayConfirmStatus ,isnull(AppPickConfirmStatus,'') as AppPickConfirmStatus ,isnull(AppIssueVerifyStatus,'') as AppIssueVerifyStatus  from Impa1";
+                    ResultImpa1 = db.Select<Impa1>(strSQL);             
+                    AppTallyConfirmStatus = Modfunction.CheckNull( ResultImpa1[0].AppTallyConfirmStatus); 
+                    AppPutawayConfirmStatus = Modfunction.CheckNull(ResultImpa1[0].AppPutawayConfirmStatus); 
+                    AppPickConfirmStatus = Modfunction.CheckNull(ResultImpa1[0].AppPickConfirmStatus); 
+                    AppIssueVerifyStatus = Modfunction.CheckNull(ResultImpa1[0].AppIssueVerifyStatus); 
+                }
+            }
+            catch { throw; }
+            return ResultImpa1;
+        }
+
 
         //public string[] test(string[] s) {
         //    if (s == null)
@@ -316,14 +351,15 @@ namespace WebApi.ServiceModel.Wms
         //    else {
         //        return s;
         //    }
-           
+
         //}
         public int Update_Imgr2_StoreNo(Imgr request)
         {
+            Get_Impa1_List();    
             int Result = -1;
             try
             {
-
+                
                 string[] QtyRemarkDetail = { "" };
                 if (request.QtyRemarkList != null && request.NewFlagList.Trim() != "")
                 {
@@ -372,16 +408,16 @@ namespace WebApi.ServiceModel.Wms
                             UpdateBy = request.UserID,
                             Description = "PUTAWAY"
                         });
-                        string str;
-                        str = "PutAwayDateTime=getDate() , AppPutawayConfirmStatus='CMP' ";
-                        db.Update("Imgr1",
-                               str,
-                               " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "' ");
+
+                 
 
                     }
+
+                    if (AppPutawayConfirmStatus == "EXE")
+                    { 
                         Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
-             
-                        if (Result != -1)
+                   
+                    if (Result != -1)
                     {
                         List<Imgr2_Receipt> Result1 = null;
                         Result1 = db.Select<Imgr2_Receipt>(
@@ -393,7 +429,18 @@ namespace WebApi.ServiceModel.Wms
                             {
                                 Result = db.SqlScalar<int>("Update Imgr2 Set MovementTrxNo=(Select top 1 TrxNo From Impm1 Where BatchNo=@GoodsReceiptNoteNo And BatchLineItemNo=@BatchLineItemNo And CustomerCode=@CustomerCode order by TrxNo) Where TrxNo=@TrxNo  And LineItemNo=@LineItemNo", new { GoodsReceiptNoteNo = Result1[i].GoodsReceiptNoteNo, BatchLineItemNo = Result1[i].LineItemNo, CustomerCode = Result1[i].CustomerCode, TrxNo = int.Parse(request.TrxNo), LineItemNo = Result1[i].LineItemNo });
                             }
+                           }
                         }
+                    }
+
+                    if (AppPutawayConfirmStatus != "")
+                    {
+                        string str;
+                        str = "PutAwayDateTime=getDate() , StatusCode='" + AppPutawayConfirmStatus + "' ";
+                        db.Update("Imgr1",
+                               str,
+                               " GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "' ");
+
                     }
                 }
             }
