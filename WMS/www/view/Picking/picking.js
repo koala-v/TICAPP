@@ -151,22 +151,21 @@ appControllers.controller('PickingDetailCtrl', [
             return blnPass;
         };
         var setScanQty = function (barcode, imgi2) {
-            if (is.equal(imgi2.SerialNoFlag, 'Y')) {
-                $scope.Detail.Scan.Qty = imgi2.ScanQty;
-                //$( '#txt-sn' ).removeAttr( 'readonly' );
-                $('#txt-sn').select();
-            } else {
-              SqlService.Select('Imgi2_Picking',  '*','TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
-                if(results.rows.length===1)
-                {
-                  imgi2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
-               }
+            // if (is.equal(imgi2.SerialNoFlag, 'Y')) {
+            //     $scope.Detail.Scan.Qty = imgi2.ScanQty;
+            //     //$( '#txt-sn' ).removeAttr( 'readonly' );
+            //     $('#txt-sn').select();
+            // } else {
+            SqlService.Select('Imgi2_Picking', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+                if (results.rows.length === 1) {
+                    imgi2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
+                }
                 imgi2.ScanQty += 1;
                 hmImgi2.remove(barcode);
                 hmImgi2.set(barcode, imgi2);
                 var obj = {
                     ScanQty: imgi2.ScanQty,
-                    PackingNo:$scope.Detail.Scan.PackingNo
+                    PackingNo: $scope.Detail.Scan.PackingNo
                 };
                 var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
                 SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
@@ -177,45 +176,43 @@ appControllers.controller('PickingDetailCtrl', [
                         $scope.showNext();
                     }
                 });
-              });
-            }
+            });
+            // }
         };
         var showImpr = function (barcode, blnScan) {
-          if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
-          {
-            if (hmImgi2.has(barcode)) {
-                var imgi2 = hmImgi2.get(barcode);
-                setScanQty(barcode, imgi2);
-            } else {
-                showPopup('Invalid Product Picked', 'assertive');
+            if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode)) {
+                if (hmImgi2.has(barcode)) {
+                    var imgi2 = hmImgi2.get(barcode);
+                    setScanQty(barcode, imgi2);
+                } else {
+                    PopupService.Alert('Invalid Product Picked', 'assertive');
+                }
             }
-          }
         };
         var setSnQty = function (barcode, imgi2) {
-          SqlService.Select('Imgi2_Picking',  '*','TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
-            if(results.rows.length===1)
-            {
-              imgi2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
-           }
-            imgi2.ScanQty += 1;
-            hmImgi2.remove(barcode);
-            hmImgi2.set(barcode, imgi2);
-            var obj = {
-                ScanQty: imgi2.ScanQty,
-
-            };
-            var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
-            SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
-                $scope.Detail.Scan.Qty = imgi2.ScanQty;
-                $scope.Detail.Scan.SerialNo = '';
-                if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
-                    $scope.showNext();
-                } else {
-                    $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
-                    $('#txt-sn').select();
+            SqlService.Select('Imgi2_Picking', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+                if (results.rows.length === 1) {
+                    imgi2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
                 }
+                imgi2.ScanQty += 1;
+                hmImgi2.remove(barcode);
+                hmImgi2.set(barcode, imgi2);
+                var obj = {
+                    ScanQty: imgi2.ScanQty,
+
+                };
+                var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
+                SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
+                    $scope.Detail.Scan.Qty = imgi2.ScanQty;
+                    $scope.Detail.Scan.SerialNo = '';
+                    if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
+                        $scope.showNext();
+                    } else {
+                        $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
+                        $('#txt-sn').select();
+                    }
+                });
             });
-          });
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {
@@ -401,14 +398,27 @@ appControllers.controller('PickingDetailCtrl', [
                 } else if (is.equal(type, 'PackingNo')) {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.PackingNo = imageData.text;
-                        $scope.Detail.Scan.PackingNo = $scope.Detail.Scan.PackingNo === '' ?  imageData.text :　$scope.Detail.Scan.PackingNo;
+                        $scope.Detail.Scan.PackingNo = $scope.Detail.Scan.PackingNo === '' ? imageData.text : 　$scope.Detail.Scan.PackingNo;
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
                     });
                 } else if (is.equal(type, 'BarCode')) {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.Detail.Scan.BarCode = imageData.text;
-                        showImpr($scope.Detail.Scan.BarCode, true);
+                        if ($scope.Detail.Imgi2.SerialNoFlag === 'Y') {
+                            if (is.not.equal($scope.Detail.Scan.SerialNo, $scope.Detail.Imgi2.SerialNo)) {
+                                PopupService.Alert(popup, 'Invalid SerialNo ').then();
+                            } else {
+                                if (blnVerifyInput('BarCode')) {
+                                    showImpr($scope.Detail.Scan.BarCode);
+                                }
+                            }
+                        }
+                        else{
+                            showImpr($scope.Detail.Scan.BarCode, true);
+                        }
+
+
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
                     });
@@ -416,7 +426,7 @@ appControllers.controller('PickingDetailCtrl', [
                     //if ($('#txt-sn').attr("readonly") != "readonly") {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.Detail.Scan.SerialNo = imageData.text;
-                        showSn($scope.Detail.Scan.SerialNo, false);
+                        // showSn($scope.Detail.Scan.SerialNo, false);
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
                     });
@@ -544,18 +554,31 @@ appControllers.controller('PickingDetailCtrl', [
         $scope.enter = function (ev, type) {
             if (is.equal(ev.keyCode, 13)) {
                 if (is.equal(type, 'barcode') && is.not.empty($scope.Detail.Scan.BarCode)) {
-                    if (blnVerifyInput('BarCode')) {
-                        showImpr($scope.Detail.Scan.BarCode);
+
+                    if ($scope.Detail.Imgi2.SerialNoFlag === 'Y') {
+                        if (is.not.equal($scope.Detail.Scan.SerialNo, $scope.Detail.Imgi2.SerialNo)) {
+                            blnPass = false;
+                            PopupService.Alert(popup, 'Invalid SerialNo ').then();
+                        } else {
+                            if (blnVerifyInput('BarCode')) {
+                                showImpr($scope.Detail.Scan.BarCode);
+                            }
+                        }
+                    } else {
+                        if (blnVerifyInput('BarCode')) {
+                            showImpr($scope.Detail.Scan.BarCode);
+                        }
                     }
+
                 } else if (is.equal(type, 'serialno') && is.not.empty($scope.Detail.Imgi2.StoreNo)) {
                     if (blnVerifyInput('SerialNo')) {
-                        showSn($scope.Detail.SerialNo);
+                        // showSn($scope.Detail.SerialNo);
                     }
                 } else if (is.equal(type, 'storeno') && is.not.empty($scope.Detail.Scan.StoreNo)) {
                     if (blnVerifyInput('StoreNo')) {
                         $('#txt-barcode').focus();
                     }
-                }else if (is.equal(type,'packingno') && is.not.empty($scope.PackingNo)){
+                } else if (is.equal(type, 'packingno') && is.not.empty($scope.PackingNo)) {
                     $scope.Detail.Scan.PackingNo = $scope.PackingNo;
                     $('#txt-storeno').focus();
                 }

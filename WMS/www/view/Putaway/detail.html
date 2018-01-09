@@ -26,6 +26,20 @@
 			</div>
 			<div class="item item-body" style="padding-top: 6px;padding-bottom: 6px;">
 				<div class="list">
+					<div class="row"  class="animate-if">
+						<div class="col col-80" style="padding:0px;">
+							<label class="item item-input">
+								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Serial No&nbsp;&nbsp;:</span>
+								<input type="text" id="txt-sn" ng-model="Detail.Scan.SerialNo" style="padding-right: 14px;" ng-keypress="enter($event, 'sn')" >
+							</label>
+						</div>
+						<div class="col col-10">
+							<button class="button button-clear button-positive button-small" ng-click="openCam('SerialNo')"><i class="icon ion-qr-scanner"></i></button>
+						</div>
+						<div class="col">
+							<button class="button button-clear button-positive button-small" ng-click="clearInput('SerialNo')"><i class="icon ion-android-close"></i></button>
+						</div>
+					</div>
 					<div class="row">
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
@@ -60,20 +74,6 @@
 					<label class="item item-input">
 						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Description : <span ng-bind="Detail.Impr1.ProductDescription"></span></span>
 					</label>
-					<div class="row" ng-if="Detail.Scan.SerialNoFlag='Y'" class="animate-if">
-						<div class="col col-80" style="padding:0px;">
-							<label class="item item-input">
-								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Serial No&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-sn" ng-model="Detail.Scan.SerialNo" style="padding-right: 14px;" ng-keypress="enter($event, 'sn')" readonly>
-							</label>
-						</div>
-						<div class="col col-10">
-							<button class="button button-clear button-positive button-small" ng-click="openCam('SerialNo')"><i class="icon ion-qr-scanner"></i></button>
-						</div>
-						<div class="col">
-							<button class="button button-clear button-positive button-small" ng-click="clearInput('SerialNo')"><i class="icon ion-android-close"></i></button>
-						</div>
-					</div>
 					<div class="row">
 						<div class="col col-90" style="padding:0px;">
 							<label class="item item-input">
