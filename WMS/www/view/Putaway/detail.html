@@ -30,7 +30,7 @@
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Serial No&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-sn" ng-model="Detail.Scan.SerialNo" style="padding-right: 14px;" ng-keypress="enter($event, 'sn')" >
+								<input type="text" id="txt-sn" ng-model="Detail.Scan.SerialNo" style="padding-right: 14px;"  ng-blur="SerialNolost()" ng-keypress="enter($event, 'SerialNo')" >
 							</label>
 						</div>
 						<div class="col col-10">
