@@ -405,9 +405,8 @@ appControllers.controller('GrPutawayDetailCtrl', [
             }
         };
         $scope.ShowImprDetailNotQty = function () {
-            if ($scope.Detail.Scan.BarCode != $scope.OldBarCode) {
                 var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
-                SqlService.Select('Imgr2_Putaway', '*', "NewBarCode='" + $scope.Detail.Scan.BarCode + "'").then(function (results) {
+                SqlService.Select('Imgr2_Putaway', '*',  "TrxNo='" + $scope.Detail.Scan.TrxNo + "' AND  LineItemNo ='" + $scope.Detail.Scan.LineItemNo + "' ").then(function (results) {
                     if (results.rows.length === 1) {
                         imgr2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
                         imgr2.StoreNo = $scope.StoreNo;
@@ -419,6 +418,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     hmImgr2.set($scope.Detail.Scan.BarCode, imgr2);
                     var barcode1 = $scope.Detail.Scan.BarCode;
                     $scope.Detail.Scan = {
+                         SerialNo:$scope.SerialNo,
                         BarCode: barcode1,
                         ProductIndex: imgr2.ProductIndex,
                         StoreNo: imgr2.StoreNo,
@@ -428,7 +428,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     };
                 });
 
-            }
+
         };
         $scope.setStoreNo = function () {
             if ($scope.Detail.Scan !== null && is.not.empty($scope.Detail.Scan.StoreNo) && is.not.empty($scope.Detail.Scan.ProductIndex)) {
@@ -592,7 +592,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     StoreNo: $scope.Detail.Scan.StoreNo,
                                     ScanQty: imgr2.ScanQty
                                 };
-                                var strFilter = "NewBarCode='" + imgr2.BarCode + "' And ProductIndex='" + imgr2.ProductIndex + "'";
+                                var strFilter = "TrxNo='" + $scope.Detail.Scan.TrxNo + "' AND  LineItemNo ='" + $scope.Detail.Scan.LineItemNo + "' ";
                                 SqlService.Update('Imgr2_Putaway', obj, strFilter).then();
                             }
                         }]
@@ -764,7 +764,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
             });
             var objUriUpdate = ApiService.Uri(true, '/api/wms/imgr2/putaway/update');
             objUriUpdate.addSearch('GoodsReceiptNoteNo', GoodsReceiptNoteNo);
-            objUriUpdate.addSearch('TrxNo', Imgr1TrxNo);
+            objUriUpdate.addSearch('TrxNo',  $scope.Detail.TrxNo);
             objUriUpdate.addSearch('QtyRemarkList', QtyRemarkList);
             objUriUpdate.addSearch('StoreNoList', StoreNoList);
             objUriUpdate.addSearch('LineItemNoList', LineItemNoList);
