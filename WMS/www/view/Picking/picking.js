@@ -78,6 +78,7 @@ appControllers.controller('PickingDetailCtrl', [
     '$ionicLoading',
     '$cordovaToast',
     '$cordovaBarcodeScanner',
+    '$cordovaKeyboard',
     'ApiService',
     'SqlService',
     'PopupService',
@@ -94,6 +95,7 @@ appControllers.controller('PickingDetailCtrl', [
         $ionicLoading,
         $cordovaToast,
         $cordovaBarcodeScanner,
+        $cordovaKeyboard,
         ApiService,
         SqlService,
         PopupService) {
@@ -247,33 +249,29 @@ appControllers.controller('PickingDetailCtrl', [
         //     }
         // };
         $scope.showImgi2 = function (row) {
-console.log($scope.Detail.Imgi2s.length +"length aaaaa");
-console.log($scope.Detail.Imgi2s[row].TrxNo +"length bbbb");
-console.log($scope.Detail.Imgi2.TrxNo +"length cccc");
-console.log($scope.Detail.Imgi2.RowNum +"length dddd");
-                    if (row !== null && $scope.Detail.Imgi2s.length >= row) {
-                        $scope.Detail.Imgi2 = {
-                            RowNum:0,
-                            TrxNo: $scope.Detail.Imgi2s[row].TrxNo,
-                            LineItemNo: $scope.Detail.Imgi2s[row].LineItemNo,
-                            StoreNo: $scope.Detail.Imgi2s[row].StoreNo,
-                            ProductTrxNo: $scope.Detail.Imgi2s[row].ProductTrxNo,
-                            ProductCode: $scope.Detail.Imgi2s[row].ProductCode,
-                            ProductDescription: $scope.Detail.Imgi2s[row].ProductDescription,
-                            SerialNoFlag: $scope.Detail.Imgi2s[row].SerialNoFlag,
-                            BarCode: $scope.Detail.Imgi2s[row].BarCode,
-                            SerialNo: $scope.Detail.Imgi2s[row].SerialNo,
-                            PackingNo: $scope.Detail.Imgi2s[row].PackingNo,
-                            Qty: $scope.Detail.Imgi2s[row].Qty,
-                            QtyBal: $scope.Detail.Imgi2s[row].Qty - $scope.Detail.Imgi2s[row].ScanQty
-                        };
-                        $scope.Detail.Scan.Qty = $scope.Detail.Imgi2s[row].ScanQty;
-                    }
-                    if (is.equal(row, $scope.Detail.Imgi2s.length - 1)) {
-                        $scope.Detail.blnNext = false;
-                    } else {
-                        $scope.Detail.blnNext = true;
-                    }
+            if (row !== null && $scope.Detail.Imgi2s.length >= row) {
+                $scope.Detail.Imgi2 = {
+                    RowNum: $scope.Detail.Imgi2s[row].RowNum,
+                    TrxNo: $scope.Detail.Imgi2s[row].TrxNo,
+                    LineItemNo: $scope.Detail.Imgi2s[row].LineItemNo,
+                    StoreNo: $scope.Detail.Imgi2s[row].StoreNo,
+                    ProductTrxNo: $scope.Detail.Imgi2s[row].ProductTrxNo,
+                    ProductCode: $scope.Detail.Imgi2s[row].ProductCode,
+                    ProductDescription: $scope.Detail.Imgi2s[row].ProductDescription,
+                    SerialNoFlag: $scope.Detail.Imgi2s[row].SerialNoFlag,
+                    BarCode: $scope.Detail.Imgi2s[row].BarCode,
+                    SerialNo: $scope.Detail.Imgi2s[row].SerialNo,
+                    PackingNo: $scope.Detail.Imgi2s[row].PackingNo,
+                    Qty: $scope.Detail.Imgi2s[row].Qty,
+                    QtyBal: $scope.Detail.Imgi2s[row].Qty - $scope.Detail.Imgi2s[row].ScanQty
+                };
+                $scope.Detail.Scan.Qty = $scope.Detail.Imgi2s[row].ScanQty;
+            }
+            if (is.equal(row, $scope.Detail.Imgi2s.length - 1)) {
+                $scope.Detail.blnNext = false;
+            } else {
+                $scope.Detail.blnNext = true;
+            }
 
         };
         var GetImgi2s = function (GoodsIssueNoteNo) {
@@ -481,21 +479,45 @@ console.log($scope.Detail.Imgi2.RowNum +"length dddd");
             var intRow = $scope.Detail.Imgi2.RowNum - 1;
             if ($scope.Detail.Imgi2s.length > 0 && intRow > 0 && is.equal($scope.Detail.Imgi2s[intRow - 1].RowNum, intRow)) {
                 $scope.clearInput();
-                $scope.showImgi2(intRow - 1);
+                returnImgi2s(intRow);
+                // $scope.showImgi2(intRow - 1);
             } else {
                 PopupService.Info(popup, 'Already the first one');
             }
+        };
+
+        var returnImgi2s = function (intRow) {
+            SqlService.Select('Imgi2_Picking', '*').then(function (results) {
+                if (results.rows.length > 0) {
+                    var len = results.rows.length;
+                    var arr = new Array();
+                    for (var i = 0; i < len; i++) {
+                        var imgi2 = results.rows.item(i);
+                        arr.push(imgi2);
+                    }
+                    $scope.Detail.Imgi2s = arr;
+                    $scope.showImgi2(intRow - 1);
+                }
+            });
+
         };
         $scope.showNext = function () {
             var intRow = $scope.Detail.Imgi2.RowNum + 1;
             if ($scope.Detail.Imgi2s.length > 0 && $scope.Detail.Imgi2s.length >= intRow && is.equal($scope.Detail.Imgi2s[intRow - 1].RowNum, intRow)) {
                 $scope.clearInput();
-                SqlService.Select('Imgi2_Picking', '*').then(function (results) {
-                    if (results.rows.length > 0) {
-                        $scope.Detail.Imgi2s = results.rows;
-                        $scope.showImgi2(intRow - 1);
-}
-});
+                //                 SqlService.Select('Imgi2_Picking', '*').then(function (results) {
+                //                     if (results.rows.length > 0) {
+                //                                   var len = results.rows.length;
+                //                                   var arr = new Array();
+                //                                   for (var i = 0; i < len; i++) {
+                //                                       var imgi2 = results.rows.item(i);
+                //                                       arr.push(imgi2);
+                //                                     }
+                //                                     $scope.Detail.Imgi2s =arr;
+                //                            $scope.showImgi2(intRow - 1);
+                // }
+                // });
+                returnImgi2s(intRow);
 
             } else {
                 PopupService.Info(popup, 'Already the last one');

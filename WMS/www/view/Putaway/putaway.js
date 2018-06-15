@@ -322,6 +322,8 @@ appControllers.controller('GrPutawayDetailCtrl', [
                             if (imgr2.Qty <= imgr2.ScanQty) {
                                 imgr2.ActualQty = imgr2.Qty;
                             }
+                            if  (imgr2.ScanQty!==0)
+                            {
                             imgr2.NewBarCode = $scope.Detail.Scan.BarCode;
                             imgr2.NewFlag = "Y";
                             SqlService.Select('Imgr2_Putaway', '*').then(function (results1) {
@@ -342,7 +344,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     // $scope.OldBarCode = $scope.Detail.Scan.BarCode;
                                 });
                             });
-                        }
+                        }}
                     });
                 }
             }

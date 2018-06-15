@@ -2,15 +2,15 @@
 var appConfig = angular.module('WMSAPP.config',[]);
 appConfig.constant('ENV', {
     website:      'www.sysfreight.net/app/wms/tic',
-    // api:          'www.sysfreight.net/apis/wms/tic',
-    api:        'localhost:5550',
+    api:          'www.sysfreight.net/apis/wms/tic',
+    // api:        'localhost:5550',
     reset:  {
         website:      'www.sysfreight.net/app/wms/tic',
         api:          'www.sysfreight.net/apis/wms/tic',
         port:         '8081'
     },
     ssl:          false, // 0 : false, 1 : true
-     // port:         '8081', // http port no
+     port:         '8081', // http port no
     debug:        true,
     mock:         false,
     fromWeb:      true,
@@ -29,7 +29,7 @@ appConfig.constant('ENV', {
     updateFile:   'update.json',
     rootPath:     'TIC',
     configFile:   'config.txt',
-    version:      '1.0.1.5',
+    version:      '1.0.1.7',
     parameter: {
         showSerialNo : false
     },
