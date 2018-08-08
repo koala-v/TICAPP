@@ -214,7 +214,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 if (hmImgr2.has(barcode)) {
                     // if ($scope.OldBarCode === "" || $scope.OldBarCode != barcode) { AND ActualQty!=ScanQty
                     var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
-                    SqlService.Select('Imgr2_Putaway', '*', " BarCode='" + $scope.Detail.Scan.BarCode + "' AND UserDefine1='" + $scope.Detail.Scan.SerialNo + "' AND StagingAreaFlag = 'Y'").then(function (results) {
+                    SqlService.Select('Imgr2_Putaway', '*', " BarCode='" + $scope.Detail.Scan.BarCode + "' AND UserDefine1='" + $scope.Detail.Scan.SerialNo + "' ").then(function (results) {
                         if (results.rows.length === 1) {
                             $scope.Detail.Scan.TrxNo = results.rows.item(0).TrxNo;
                             $scope.Detail.Scan.LineItemNo = results.rows.item(0).LineItemNo;
@@ -239,10 +239,10 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                 $scope.OldBarCode = $scope.Detail.Scan.BarCode;
                             }
                         } else if (results.rows.length === 0) {
-                            PopupService.Alert(popup, 'Please Check Enter Currenct Bar Code');
+                            PopupService.Alert(popup, 'Please Check Correct SerialNo And BarCode ');
                             $('#txt-barcode').select();
                         } else {
-                            SqlService.Select('Imgr2_Putaway', '*', " StagingAreaFlag='Y'    AND UserDefine1='" + $scope.Detail.Scan.SerialNo + "'  AND (BarCode1='" + $scope.Detail.Scan.BarCode + "' OR BarCode2='" + $scope.Detail.Scan.BarCode + "'  OR BarCode3='" + $scope.Detail.Scan.BarCode + "' )").then(function (results) {
+                            SqlService.Select('Imgr2_Putaway', '*', " UserDefine1='" + $scope.Detail.Scan.SerialNo + "'  AND (BarCode1='" + $scope.Detail.Scan.BarCode + "' OR BarCode2='" + $scope.Detail.Scan.BarCode + "'  OR BarCode3='" + $scope.Detail.Scan.BarCode + "' )").then(function (results) {
                                 if (results.rows.length >= 1) {
                                     for (var i = 0; i < results.rows.length; i++) {
                                         if (results.rows.item(i).ActualQty != results.rows.item(i).ScanQty || i === results.rows.length - 1) {

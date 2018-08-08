@@ -29,7 +29,7 @@ appConfig.constant('ENV', {
     updateFile:   'update.json',
     rootPath:     'TIC',
     configFile:   'config.txt',
-    version:      '1.0.1.7',
+    version:      '1.0.1.8',
     parameter: {
         showSerialNo : false
     },
