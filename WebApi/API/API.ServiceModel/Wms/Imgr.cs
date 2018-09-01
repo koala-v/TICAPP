@@ -237,7 +237,7 @@ namespace WebApi.ServiceModel.Wms
                 {
                     string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, Imgr2.StoreNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS DefaultStoreNo,0 as ProductIndex," +
                                     "isnull((Select StagingAreaFlag From Whwh2 Where WarehouseCode=Imgr2.WarehouseCode And StoreNo=Imgr2.StoreNo),'N') AS StagingAreaFlag," +
-                                    "IsNull(Imgr2.ProductCode,'') AS ProductCode, IsNull(Imgr2.ProductDescription,'') AS ProductDescription, IsNull(Imgr2.UserDefine7,'') AS UserDefine1," +
+                                    "IsNull(Imgr2.ProductCode,'') AS ProductCode, IsNull(Imgr2.ProductDescription,'') AS ProductDescription, IsNull(Imgr2.UserDefine1,'') AS UserDefine1," +
                                     "(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS Qty,(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS ActualQty," + getBarCodeListSelect() +
                                      "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
                                      "0 AS ScanQty,Imgr2.DimensionFlag,Imgr2.PackingQty,Imgr2.WholeQty,Imgr2.LooseQty,Imgr1.GoodsReceiptNoteNo,'' As QtyStatus,'' AS NewBarCode,'' AS NewFlag " +

@@ -344,7 +344,21 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     // $scope.OldBarCode = $scope.Detail.Scan.BarCode;
                                 });
                             });
-                        }}
+                        }else{
+                          $scope.Detail.Scan = {
+                              SerialNo: '',
+                              BarCode: '',
+                              ProductIndex: imgr2.ProductIndex,
+                              StoreNo: '',
+                              TrxNo: imgr2.TrxNo,
+                              LineItemNo: imgr2.LineItemNo,
+
+                              Qty: '',
+                          };
+                          $scope.Detail.Impr1.ProductCode='';
+                            $scope.Detail.Impr1.ProductDescription='';
+                        }
+                      }
                     });
                 }
             }
